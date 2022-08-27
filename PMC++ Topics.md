@@ -1,20 +1,21 @@
 * `[2]` Pointers, smart pointers and ownership (C++11/14/17)
 * Data structures
   * `[1]` Contiguous data structures, iterators, views(C++17/20) and concepts(C++20)
-  * Quick view of non-contiguous data structures
-	  * `deque`
-	  * `set`, `unordered_set`
-	  * `map`, `unordered_map`
-	  * `stack`, `queue`, `priority_queue`
-  * interval data structure (区间数据结构) 区间树
-  * `[1]` `tuple`(C++11), `variant`, `any`, `optional` (C++17 or Boost with C++11)
+* `[4]` Text processing
+* `[2]` Associative containers, adaptors, composable data structures etc.
+  * `deque`
+  * `stack`, `queue`, `priority_queue`
+  * `set`, `unordered_set`
+  * `map`, `unordered_map`
+  * interval data structure
+  * `tuple`(C++11), `variant`, `any`, `optional` (C++17 or Boost with C++11)
 * `[1]` Algorithms
-  * The forgotten `<algorithm>`
+  * `<algorithm>`
   * `std::execution` and parallel STL (C++17)
-* `[2]` Memory management (C++17)
-* `[^]` Most commonly used utility libraries
+* `[1]` Memory management (C++17)
+* `[1]` Some daily-use utility libraries
   * `<random>`, `<chrono>`, `<locale>` (C++11), `filesystem` (C++17), `<format>` (C++20)
-* `[^]` Engineering C++
+* `[1]` Engineering of C++
 	* Use case study: Writing unit test for standard libraries.
 	* Project organization and dependencies maintenance with modern CMake
 	* ABI compatibility
