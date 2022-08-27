@@ -1,6 +1,5 @@
 * `[2]` Pointers, smart pointers and ownership (C++11/14/17)
-* Data structures
-  * `[1]` Contiguous data structures, iterators, views(C++17/20) and concepts(C++20)
+* `[1]` Contiguous data structures, iterators, views(C++17/20) and concepts(C++20)
 * `[4]` Text processing
 * `[2]` Associative containers, adaptors, composable data structures etc.
   * `deque`
