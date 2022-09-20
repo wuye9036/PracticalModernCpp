@@ -1,12 +1,15 @@
 * `[2]` Pointers, smart pointers and ownership (C++11/14/17)
-* `[1]` Contiguous data structures, iterators, views(C++17/20) and concepts(C++20)
+* `[1]` Contiguous data structures, iterators, views(C++17/20) and concepts(C++20), adaptors
+	* `deque`
+	* `stack`, `queue`, `priority_queue`
 * `[4]` Text processing
-* `[2]` Associative containers, adaptors, composable data structures etc.
-  * `deque`
-  * `stack`, `queue`, `priority_queue`
+* `[2]` Associative containers
   * `set`, `unordered_set`
   * `map`, `unordered_map`
+  * `flat_*`
   * interval data structure
+* sum types
+  * union
   * `tuple`(C++11), `variant`, `any`, `optional` (C++17 or Boost with C++11)
 * `[1]` Algorithms
   * `<algorithm>`
@@ -16,7 +19,7 @@
   * `<random>`, `<chrono>`, `<locale>` (C++11), `filesystem` (C++17), `<format>` (C++20)
 * `[1]` Engineering of C++
 	* Use case study: Writing unit test for standard libraries.
-	* Project organization and dependencies maintenance with modern CMake
+	* Project organization and  dependencies maintenance with modern CMake
 	* ABI compatibility
 * C++ core language features
   * `[1]` Out-of-the-box features
