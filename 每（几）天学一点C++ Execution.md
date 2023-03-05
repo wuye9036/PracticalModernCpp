@@ -1,13 +1,13 @@
 
 # 一  “Our eyes are yet to open, fear the C plus plus.”
 
-“和我签订契约，成为马猴烧酒吧！” —— 说个鬼故事，小圆脸已经是2011年的作品了。同年，C++11正式发布了。
+在远古时代，C++11正式发布了。十年过去，它增添了许多新特性，表达能力更强，当然写出来的代码也可能会更加令人抓狂 ———— 正如那些有着无穷知识，却又令人发狂的上位者们。
 
-十年过去，C++新特性更多，表达能力更强，当然写出来的代码也可能会更加令人抓狂，如同血源中拥有无穷知识，却又令人发狂的上位者们。
+本系列中是对其中一名上位者 —— C++ Execution —— 进行探索的癫狂之旅。
 
-在探究C++古神的奥秘之前，先从一个简单的例子来回顾一下现状：
+探究上位者秘辛之前，需要一个例子作为祭品：
 
-> 设计一个功能单元，输入一个数字`arg`，返回`arg + 42`
+> 设计一个功能单元，输入一个数字`arg`，返回`arg + 42`，比如：
 >  ``` C++
 >  #include <cstdlib>
 >  #include <iostream>
@@ -21,7 +21,7 @@
 >  }
 >  ```
 
-当然，最基本的办法就是也不管什么单元了，就直接了当的写：
+对于这个问题，最基本的办法自然是直接了当地写：
 
 ``` C++
 // ...
@@ -29,7 +29,7 @@
 // ...
 ```
 
-如果稍微讲究一些可以写成
+如果考虑把实现细节封装起来并提供可复用性，可以写成：
 
 ``` C++
 int add42(int a) {
@@ -41,53 +41,44 @@ int add42(int a) {
 // ...
 ```
 
-
+再泛化一下`arg`的类型，使得它可以用于更广泛的场合：
 
 ``` C++
-int add(int a, int b) {
-    return a + b;
-}
-
-auto add42 = [](int a) { return a + 42;}
-
 template <typename T>
-T add(T a) {
-    return a + 42;
+auto add42(T arg) {
+    return arg + 42;
 }
-
-template <typename T, int v> T add(T a){
-    return a + v;
-}
-
-template <int C>
-struct Add {
-    template <int A>
-    class Apply {
-        static const int Value = A + C;
-    };
-};
-
-template <integral C>
-struct Add {
-    constexpr auto apply(integral auto a) {
-        return a + C;
-    }
-}
-
 ```
 
-在 C++ Execution 的加持下，我们可以获得一种新的魔法：
+或者再宽泛一点，42也不是什么奇妙的、独一无二的数字：
 
 ``` C++
-sender auto s = just(v) | then([](int i) {i += 42});
+template <auto I, typename T>
+auto addK(T arg) {
+    return arg + I;
+}
 
-sync_wait(s).value();
+// ...
+    int out_value = addK<42>(in_value);
+// ...
 ```
 
-表达了数据的流动以及在流动过程中的变换。
+如果只针对题目本身，可以说以上几种解答都是可以满足要求的。只不过不同的解法都有一些额外的特性，比如有些*封装了实现细节*，有一些则提供了*泛型*性。当这些特性连同题目的要求一起被需要的时候，那么这些解就不再是面目可憎，而的确是不同组合条件下的较优解。
 
+接下来，就要看看上面这个淳朴的祭品在上位者 C++ Execution 眼中扭曲的样子 [https://godbolt.org/z/rv41cqPeq]：
 
+``` C++
+// ...
+    sender auto s = just(in_value) | then([](int i) {return i + 42;});
+    sync_wait(s).value();
+// ...
+```
 
+Hmm，欢迎你，外乡人。
+
+> 我们的眼界尚不足以意识到C++的可怖之处。 —— Master Willem
+
+# 二 "But where's an outsider like yourself to begin?"
 # Backlog
 
 吾等，因血而成人，因血而超人，因血而非人。无知者啊，敬畏血吧！
@@ -108,4 +99,7 @@ Features:
   * RAII is well preserved
 * Evaluation and scheduling are separated
 * Rich and flexible customization (i.e. hookable or injectable) points
+  * Related design patterns:
+    * Decorator
+    * Visitor
 
