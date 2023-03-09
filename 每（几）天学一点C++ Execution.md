@@ -190,7 +190,9 @@ auto foo = [in_value]() {
 
 实现 *延期求解* 有多种办法，比如使用设计模式中的*intepreter*或者*builder*。不过，因为C++本身就提供了相对完善地元编程能力，比如模板、泛型和操作符重载。如果能充分运用这些特性，编译器就可以获得充足的信息以充分优化代码。因此在C++中完成*延期求解*这一行为，更加流行的方法是“血疗”：**表达式模板（expression template）**。
 
-这里我们用一个简单的祭品来帮助大家回顾一下“血疗”(本血疗手册参考自：[https://en.wikipedia.org/wiki/Expression_templates])：
+这里我们用一个简单的祭品：**表达式求值** 来帮助大家回顾一下“血疗”(本血疗手册参考自：[https://en.wikipedia.org/wiki/Expression_templates])。
+
+表达式求值几乎是所有语言的入门课。在C++中对表达式求值可以看作是立即执行的。我们需要进行一些设计，把立即执行的表达式求值变成*延期求解*的。
 
 *表达式*是一个递归的树状结构。也就是说，*表达式*的一部分也是一个*表达式*。`a + 2 + b` 是一个加法表达式，它将两个子表达式 `a + 2` 和 `b` 用加号连接了起来。我们可以设计一个空的结构`struct Expr`，作为表达式这个概念的根节点。
 
@@ -259,7 +261,7 @@ auto operator + (E1 e1, E2 e2) {
 }
 ```
 
-`get()`的实现说明， `Add_`求值的时候不能就他一个人惨，还要带着它的小弟们一起惨。这样，下面这段代码就可以执行了：
+`Add_::get()`的实现中调用了小弟们的`get()`，这说明`Add_`求值的时候不能就他一个人惨，还要带着它的小弟们一起惨。总之，在增加了必要的代码后，下面这段代码就可以执行了：
 
 ``` C++
   int a{1}, b{2}, c{3};
@@ -272,20 +274,183 @@ auto operator + (E1 e1, E2 e2) {
 
 你看，这是不是就和我们的祭品长得差不多了？
 
-当然在这个演示语法的例子中，并不太能看得出*表达式模板*的作用；问题开头给出的“血疗”参考的链接中更能说明*表达式模板*的作用。
-*表达式模板*最早、也是最广泛的应用在线性代数库的计算中，就是因为它的*延迟求解*的特性，可以调整实际的计算路径，完成诸如循环融合、矩阵乘法的重组等一系列对性能大有助益的优化动作。迄今为止它也是*Eigen*等C++数值库所采用的主要优化方法之一。
+当然在这个演示语法的例子因为太简单，并不太能看得出*表达式模板*的作用；问题开头给出的“血疗”参考的链接中更能说明*表达式模板*的作用。
+*表达式模板*最早、也是最广泛的应用是在线性代数库中。这是因为它的*延迟求解*的特性，可以调整实际的计算路径，完成诸如循环融合、矩阵乘法的重组等一系列对性能大有助益的优化动作。迄今为止它也是*Eigen*等C++数值库所采用的主要优化方法之一。
 
-除此之外，C++中还常使用*表达式模板*用来构造方言（dialect）。这些方言通常是类似于LINQ或者SQL那种声明式语言，其具体的执行步骤往往和语法语义不完全一致。此类方言可用于构造解释器等概念简单、实现复杂的功能。这一类“方言”库比较典型的有Boost.Spirit和Boost.Proto.
+除此之外，C++中还常使用*表达式模板*用来构造方言（dialect）。这些方言通常是类似于LINQ或者SQL那种声明式语言，其具体的执行步骤往往和方言的语法语义不完全一致。此类方言可用于构造解释器等概念简单、实现复杂的功能。这一类“方言”库比较典型的有Boost.Spirit和Boost.Proto.
 
 但是和这里演示的*表达式模板*相比，Execution对*表达式模板*的使用又有所不同。因为：一切为了异步。
 
 > 我等，因异步而成人，因异步而超人，因异步而非人。无知者啊，敬畏异步吧！
 
+# 四 “the push and the pull are one.”
+
+观察上一节中的*表达式模板*，可以发现它有两个特征：
+
+1. 在表达式求值这个例子中，求值函数 `get()` 的调用顺序是先调用最靠近结果的`Expr`，然后依次递归，最后调用叶节点上Value的`get()`。这一从结果到源头的调用顺序，我们可称之为 "Pull Mode"，也就是说，只要表达式不去拉取子表达式的结果，子表达式就啥都不做。
+2. 整个求值过程在一个当前线程中同步执行完成。它的效果和直接的递归并没有什么两样。
+
+我们要模仿的上位者Execution，在这两点上都和我们的表达式模板略有不同。上位者的执行可以是异步的，不同表达式之间的执行可以并行；其次Execution的求值驱动顺序是*push mode*，也就是先计算前面一级，然后把结果向数据管道的后一级 `push`，以驱动后面的管道执行自己的操作。
+
+根本上讲*push/pull*并不存在对立性，它们的实际执行顺序皆由数据间的依赖关系所决定。比如在表达式这个例子中，表面上看起来，`Add_::get()` 是最先*执行*的，`Value::get()`是最后执行的，但实际上，因为求和必须要在两个子树都计算出结果之后才能执行，因此从运算顺序上，`Value::get()` 反而是最先*完成*的。而优化后的执行代码，也往往会变成从叶节点往根节点执行。表达式例子中实际翻译出来的代码会变成下面这样：
+
+``` nasm
+mov DWORD PTR [rsp+4], 1
+mov DWORD PTR [rsp+8], 2
+mov DWORD PTR [rsp+12], 3
+mov eax, DWORD PTR [rsp+4]    ;; o  = a
+mov ecx, DWORD PTR [rsp+8]
+mov edx, DWORD PTR [rsp+12]
+add eax, ecx                  ;; o += b
+lea rcx, [rsp+16]
+add eax, edx                  ;; o += c
+mov edx, 1
+mov DWORD PTR [rsp+16], eax
+```
+
+但从表达上来说，如果任务是从一个起点到一个或多个可能的终点这样的树状结构会更适合*push*的结构；相应的，如果任务由不同的起点汇聚到一个终点（比如表达式求值），那*pull*会更加适合。特别是当树或者图中只有部分路径会被执行的时候，如果执行顺序不太合适就可能会导致无谓的计算，此时需要做额外的结构避免此类的性能劣化。
+
+我们也可以为表达式模板增加异步计算的功能([示例](https://godbolt.org/z/5qf7WT6c5))。
+
+假设我们的设备是一个特别缓慢的设备，取一个数字需要`2ms`, 执行一次加法需要`3ms`，执行一次乘法需要`7ms`：
+
+``` C++
+auto slow_fetch(auto const &v) {
+  std::this_thread::sleep_for(2ms);
+  return v;
+}
+
+struct _slow_add {
+  auto operator() (auto a, auto b) const {
+    std::this_thread::sleep_for(3ms);
+    return a + b;
+  }
+};
+inline constexpr auto slow_add = _slow_add{}; 
+
+// 这里 slow_add 使用函数对象，因为我们需要将这个泛型函数作为参数，传递给别的函数以用于回调：
+//    async_eval(slow_add, a, b);
+// 此时如果写成
+//    auto slow_add(auto a, auto b) { ... }
+// 会因为 slow_add 本身不是一个变量，会导致编译错误。
+
+struct _slow_mul {
+  auto operator() (auto a, auto b) const {
+    std::this_thread::sleep_for(7ms);
+    return a * b;
+  }
+};
+inline constexpr auto slow_mul = _slow_mul{}; 
+```
+
+那么我们可以把原先是同步的程序，使用`std::future`和`std::async`改造成异步程序：
+
+``` C++
+template <typename T> struct Value : Expr {
+  future<T> eval() {
+    return async(
+      [this]() { return slow_fetch(v); }
+    );
+  }
+  T const &v;
+  explicit Value(T const &a) : v(a) {}
+};
+
+template <typename OpT1, typename OpT2> struct Add_ : Expr {
+  OpT1 a;
+  OpT2 b;
+  auto eval() {
+    return async(
+      [this]() mutable {
+        auto a_future = a.eval();
+        auto b_future = b.eval();
+        return slow_add(a_future.get(), b_future.get()); 
+    });
+  }
+};
+
+template <typename OpT1, typename OpT2> struct Mul_ : Expr {
+  OpT1 a;
+  OpT2 b;
+  auto eval() {
+    return async(
+      [this]() mutable {
+        auto a_future = a.eval();
+        auto b_future = b.eval();
+        return slow_mul(a_future.get(), b_future.get()); 
+    });
+  }
+};
+
+auto operator+(std::derived_from<Expr> auto e1, std::derived_from<Expr> auto e2) {
+  return Add_<decltype(e1), decltype(e2)>{{}, e1, e2};
+}
+
+auto operator*(std::derived_from<Expr> auto e1, std::derived_from<Expr> auto e2) {
+  return Mul_<decltype(e1), decltype(e2)>{{}, e1, e2};
+}
+
+int main(int argc, char* argv[]) {
+                                   // current time: 0ms
+  int a{1}, b{2}, c{3}, d{4};
+  Value<int> va{a}, vb{b}, vc{c}, vd{4};
+  auto r = (va + vb) * (vc + vd);
+  auto r_future = r.eval();               
+  fmt::print("{}", r_future.get()); // start at ~0ms, end at ~12ms = 2ms(4T) + 3ms(2T) + 7ms(1T)
+  return 0;
+}
+```
+
+当然，经过观察可以发现，`Add_::eval` 和 `Mul_::eval` 是一个重复的功能：
+1. 调用子表达式的 `eval`，触发子表达式的执行，并获得一个 `std::future` 用于等待值的完成；
+2. 启动一个异步执行的函数，这个函数在执行的时候会等待子表达式计算完成、并完成自身的求值。同时返回一个 `std::future` 可以让别人等他的结果。
+
+唯一的差别点就在于求值本身是调用`slow_add`还是`slow_mul`。
+
+因此我们可以把这两个函数提取出一个公共函数 `async_eval` 来 —— 甚至我们还可以把`Add_`和`Mul_`合并成`BinaryOp_`：
+
+``` C++
+// 亿点点小技巧
+template <typename ImmFn, typename... SubExprsT> 
+auto async_eval(ImmFn&& fn, SubExprsT&&... subExprs) {
+  auto future_tuple = make_tuple(subExprs.get()...);
+  return async([&fn, future_tuple = std::move(future_tuple)]() mutable{
+    auto invoke_with_future_eval = [&fn](auto&&... future_args) {
+      return fn(future_args.get()...);
+    };
+    return apply(invoke_with_future_eval, std::move(future_tuple));
+  });
+}
+
+// 合并之后的二元运算符
+template <typename OpT1, typename OpT2, typename OpFunc>
+struct BinaryOpExpr_ : Expr {
+  OpT1 a;
+  OpT2 b;
+  OpFunc op;
+  auto get() {
+    return async_eval(op, a, b);
+  }
+};
+
+auto operator+(std::derived_from<Expr> auto e1, std::derived_from<Expr> auto e2) {
+  return BinaryOpExpr_<decltype(e1), decltype(e2), decltype(slow_add)>{
+    {}, e1, e2, slow_add};
+}
+
+auto operator*(std::derived_from<Expr> auto e1, std::derived_from<Expr> auto e2) {
+  return BinaryOpExpr_<decltype(e1), decltype(e2), decltype(slow_mul)>{
+    {}, e1, e2, slow_mul};
+}
+```
+
+这样我们就仿照上位者Execution，根据自己的知识构造了“眼” —— 虽然看起来还是挺畸形的。
+
+当我们以为窥明神秘之时，上位者正在呢喃。
+
+> THE PUSH AND PULL ARE ONE.
 
 # Backlog
-
-1. `s` 保留了全部的执行结构，可以根据需要在编译器进行匹配和变换
-2. “管道”中的每一个处理步骤，都有一次重新调度的机会 —— 可以选择是否需要执行、在哪里执行、什么时候执行等等。
 
 * Expression Templates
 * Monadic
@@ -313,3 +478,4 @@ Features:
     * Decorator
     * Visitor
 
+https://www.gcores.com/articles/95998
