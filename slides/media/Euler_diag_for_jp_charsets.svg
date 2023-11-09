@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xml:lang="mul" version="1.1"
+  width="800px" height="595.66px" viewBox="0 0 599 446"
+  xmlns="http://www.w3.org/2000/svg"
+>
+<title>Relationships between Japanese-Related Character Sets</title>
+
+<desc>Euler diagram explaining the relationship between character sets mainly related to Japanese.</desc>
+
+<metadata>
+<rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+>
+	<rdf:Description rdf:about="">
+		<dc:title xml:lang="ja">日本語関連の文字集合の関係</dc:title>
+		<dc:title xml:lang="x-default">Relationships between Japanese-Related Character Sets</dc:title>
+		<dc:creator rdf:resource="https://meta.wikimedia.org/?curid=10484470"/>
+		<dc:subject rdf:resource=""/>
+		<dc:description xml:lang="ja" rdf:parseType="Resource">
+			<dc:format rdf:datatype="http://purl.org/dc/terms/IMT">text/x-wiki</dc:format>
+			<rdf:value><![CDATA[
+主に[[w:ja:日本語|日本語]]に関連した[[w:ja:文字集合|文字集合]]同士の関係性を
+[[w:ja:オイラー図|オイラー図]]を用いて説明する。
+
+各集合の色と文字集合との対応は次の通り。
+* {{color|w|'''紅'''|bg=magenta}}: [[w:ja:JIS X 0208|JISX0208]]-1990
+* {{color|b|'''黄'''|bg=yellow }}: [[w:ja:Microsoftコードページ932|Windows-31J]]
+* {{color|w|'''青'''|bg=blue   }}: [[w:ja:JIS X 0213|JISX0213]]-2004
+* {{color|b|'''藍'''|bg=aqua   }}: [[w:ja:マイクロソフト標準キャラクタセット|Microsoft標準日本語文字セット]]Ver.3
+* {{color|w|'''緑'''|bg=green  }}: [[w:ja:JIS X 0212|JISX0212]]-1990
+* {{color|w|'''赤'''|bg=red    }}: [[w:ja:Unicode|Unicode]] 5.0
+]]><!--  --></rdf:value>
+		</dc:description>
+		<dc:description xml:lang="x-default" rdf:parseType="Resource">
+			<dc:format rdf:datatype="http://purl.org/dc/terms/IMT">text/x-wiki</dc:format>
+			<rdf:value><![CDATA[
+[[w:Euler diagram|]] explaining the relationship between
+[[w:character sets|]] mainly related to [[w:Japanese|]].
+
+The correspondence between the color of each set and the character set
+is described below.
+* {{color|w|'''Magenta'''|bg=magenta}}: [[w:ja:JIS X 0208|JISX0208]]-1990
+* {{color|b|'''Yellow'''|bg=yellow  }}: [[w:ja:Microsoftコードページ932|Windows-31J]]
+* {{color|w|'''Blue'''|bg=blue      }}: [[w:ja:JIS X 0213|JISX0213]]-2004
+* {{color|b|'''Aqua'''|bg=aqua      }}:<!--
+-->[[w:ja:マイクロソフト標準キャラクタセット|Microsoft Standard Japanese Character Set]] Ver.3
+* {{color|w|'''Green'''|bg=green    }}: [[w:ja:JIS X 0212|JISX0212]]-1990
+* {{color|w|'''Red'''|bg=red        }}: [[w:ja:Unicode|Unicode]] 5.0
+]]><!--  --></rdf:value>
+		</dc:description>
+		<dc:contributor rdf:resource="https://ja.wikipedia.org/?curid=574329"/>
+		<dc:date rdf:datatype="http://www.w3.org/2001/XMLSchemadate">2019-09-11</dc:date>
+		<dc:type rdf:datatype="http://purl.org/dc/terms/DCMIType">StillImage</dc:type>
+		<dc:format rdf:datatype="http://purl.org/dc/terms/IMT">image/svg+xml</dc:format>
+		<dc:source xml:lang="ja"
+		  rdf:resource="https://upload.wikimedia.org/wikipedia/commons/c/c6/Ver3benzu.PNG"/>
+		<dc:source xml:lang="x-default"
+		  rdf:resource="https://upload.wikimedia.org/wikipedia/commons/0/08/Ver3benzu-EN.PNG"/>
+		<dc:language rdf:datatype="http://purl.org/dc/terms/ISO639-2">mul</dc:language>
+		<dc:rights rdf:resource="http://www.wtfpl.net/about/"/>
+	</rdf:Description>
+</rdf:RDF>
+</metadata>
+
+<!--
+<rect
+  width="100%" height="100%"
+  fill="white" stroke="blue" stroke-width="2"
+/>
+-->
+
+<g
+  fill-opacity="0.66"
+  font-size="18" font-family="'Liberation Sans', TakaoPGothic, sans-serif"
+>
+<g>
+	<title>Unicode 5.0</title>
+	<ellipse
+	  cx="174.5" cy="129.5" rx="167.5" ry="122.5"
+	  fill="red" stroke="black"
+	/>
+	<polyline
+	  fill="none" stroke="black"
+	  points="52,189 96,433 231,433"
+	/>
+	<polygon
+	  fill-opacity="1"
+	  points="230,430 235,433 230,436"
+	/>
+	<switch>
+		<text systemLanguage="ja"
+		  x="246" y="437"
+		>赤：Unicode 5.0</text>
+		<text
+		  x="246" y="437"
+		>Red: Unicode 5.0</text>
+	</switch>
+</g>
+
+<g>
+	<title xml:lang="ja">Microsoft標準日本語文字セットVer.3</title>
+	<title>MS Std JPN Charset, Ver.3</title>
+	<ellipse
+	  cx="171.5" cy="126.5" rx="142.5" ry="91.5"
+	  fill="aqua" stroke="black"
+	/>
+	<polyline
+	  fill="none" stroke="black"
+	  points="130,201 166,382 269,382"
+	/>
+	<polygon
+	  fill-opacity="1"
+	  points="268,379 273,382 268,385"
+	/>
+	<switch>
+	<text systemLanguage="ja"
+	  x="280" y="386"
+	>藍：Microsoft標準日本語文字セットVer.3</text>
+	<text
+	  x="280" y="386"
+	>Aqua: MS Std JPN Charset, Ver.3</text>
+	</switch>
+</g>
+
+<g>
+	<title>JISX0213-2004</title>
+	<ellipse
+	  cx="189" cy="126.5" rx="114" ry="74.5"
+	  fill="blue" stroke="black"
+	/>
+	<polyline
+	  fill="none" stroke="black"
+	  points="165,190 197,353 286,353"
+	/>
+	<polygon
+	  fill-opacity="1"
+	  points="285,350 290,353 285,356"
+	/>
+	<switch>
+	<text systemLanguage="ja"
+	  x="304" y="358"
+	>青：JISX0213-2004</text>
+	<text
+	  x="304" y="358"
+	>Blue: JISX0213-2004</text>
+	</switch>
+</g>
+
+<g>
+	<title>JISX0212-1990</title>
+	<ellipse
+	  cx="98" cy="129.5" rx="68" ry="48.5"
+	  fill="green" stroke="black"
+	/>
+	<polyline
+	  fill="none" stroke="black"
+	  points="87,166 130,410 249,410"
+	/>
+	<polygon
+	  fill-opacity="1"
+	  points="248,407 253,410 248,413"
+	/>
+	<switch>
+	<text systemLanguage="ja"
+	  x="264" y="414"
+	>緑：JISX0212-1990</text>
+	<text
+	  x="264" y="414"
+	>Green: JISX0212-1990</text>
+	</switch>
+</g>
+
+<g>
+	<title>Windows-31J</title>
+	<ellipse
+	  cx="220.5" cy="126.5" rx="82.5" ry="80"
+	  fill="yellow" stroke="black"
+	/>
+	<polyline
+	  fill="none" stroke="black"
+	  points="217,200 247,325 306,325"
+	/>
+	<polygon
+	  fill-opacity="1"
+	  points="305,322 310,325 305,328"
+	/>
+	<switch>
+	<text systemLanguage="ja"
+	  x="321" y="329"
+	>黄：Windows-31J</text>
+	<text
+	  x="321" y="329"
+	>Yellow: Windows-31J</text>
+	</switch>
+</g>
+
+<g>
+	<title>JISX0208-1990</title>
+	<ellipse
+	  cx="234.5" cy="123.5" rx="68.5" ry="54"
+	  fill="magenta" stroke="black"
+	/>
+	<polyline
+	  fill="none" stroke="black"
+	  points="251,166 283,296 324,296"
+	/>
+	<polygon
+	  fill-opacity="1"
+	  points="323,293 328,296 323,299"
+	/>
+	<switch>
+	<text systemLanguage="ja"
+	  x="338" y="301"
+	>紅：JISX0208-1990</text>
+	<text
+	  x="338" y="301"
+	>Magenta: JISX0208-1990</text>
+	</switch>
+</g>
+
+<!--
+<image
+  opacity="0.4"
+  width="100%" height="100%"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xlink:href="orig.png"
+/>
+-->
+</g>
+</svg>

@@ -1,0 +1,45 @@
+{
+    "version": 5,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 22
+    },
+    "configurePresets": [
+        {
+            "name": "clang_rel_linux_x64",
+            "displayName": "Clang Release Linux/WSL x64",
+            "description": "Clang Release Linux/WSL x64",
+            "toolchainFile": "${sourceDir}/../../Code/vcpkg/scripts/buildsystems/vcpkg.cmake",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_MODULE_PATH": "${sourceDir}/cmake/unifex"
+            }
+        },
+        {
+            "name": "clang_dbg_linux_x64",
+            "displayName": "Clang Debug Linux/WSL x64",
+            "description": "Clang Debug Linux/WSL x64",
+            "toolchainFile": "${sourceDir}/../../Code/vcpkg/scripts/buildsystems/vcpkg.cmake",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_MODULE_PATH": "${sourceDir}/cmake/unifex"
+            }
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "Debug Poly",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "clang_dbg_linux_x64"
+        }
+    ]
+}
