@@ -29,12 +29,12 @@ SenderList operator | (SenderList snds, Sender& s) {
 
 ![](media/Senders-List.png)
 
-或者如果`Task`自身是一个链表结构的话，也可以这样：
+或者如果`sender`自身是一个链表结构的话，也可以这样：
 
 ``` C++
-Task& operator | (Task& currentTask, Task& nextTask) {
-    currentTask.connect(nextTask);
-    return currentTask;
+Sender& operator | (Sender& currentSender, Sender& nextSender) {
+    currentSender.connect(nextSender);
+    return currentSender;
 }
 ```
 
@@ -42,11 +42,11 @@ Task& operator | (Task& currentTask, Task& nextTask) {
 
 ![](media/Senders-LinkedList.png)
 
-因为`currentTask`需要把数据传递给`nextTask`，这个数据类型可能是任意的。如果`Task`是一个固定类型而缺乏泛型支持，就意味着前一个`Task`无法向后一个`Task`传递一个强类型数据。数据在传递的过程中，需要进行类型擦除，比如万恶的`void*`或者不那么罪恶的`std::any`。
+因为`currentSender`需要把数据传递给`nextSender`，这个数据类型可能是任意的。如果`Sender`是一个固定类型而缺乏泛型支持，就意味着前一个`Sender`无法向后一个`Sender`传递一个强类型数据。数据在传递的过程中，需要进行**类型擦除**，比如罪恶的`void*`或者不那么罪恶的`std::any`。
 
 这并不符合C++教会上层人士对上位者们的信仰。类型擦除存在两个问题，一是类型的正确性无法在编译期得到保证，即便`std::any`等现代类型擦除的实现可以在运行时进行检查；二是前后两段本来强相关的代码被分离开了，使得编译器无法将两段代码整合在一起进行优化，就如同我们在*表达式求值*这个例子中所看到的那样。
 
-为了让类型可以在`Task`之间进行传递，`std::execution`的实现`libunifex`和`stdexec`都选择使用嵌套将多个`Senders`连接起来：
+为了让类型可以在`Sender`之间进行传递，`std::execution`的实现`libunifex`和`stdexec`都选择使用嵌套将多个`Senders`连接起来：
 
 ``` C++
 
